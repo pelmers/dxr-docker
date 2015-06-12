@@ -1,0 +1,11 @@
+{% for p in projects %}
+- project:
+    name: '{{ p.name }}'
+    url: '{{ p.url }}'
+    sched: '{{ p.sched }}'
+    {{ 'is_disabed = %s\n' % p.is_disabled if p.is_disabled -}}
+    {{ 'my_quiet_period = %s\n' % p.my_quiet_period if p.my_quiet_period -}}
+    {{ 'docker_img = %s\n' % p.docker_img if p.docker_img -}}
+    jobs:
+        - '{name}_index'
+{% endfor %}
