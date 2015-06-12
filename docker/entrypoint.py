@@ -142,7 +142,7 @@ class IndexTree(object):
         if not os.path.exists(source_dir):
             try:
                 os.lstat(parent_dir)
-            except:
+            except OSError:
                 os.makedirs(parent_dir, 0755)
             if glob_re.search(url):
                 repos = self.scrape(url[:-1])
@@ -168,9 +168,9 @@ if __name__ == "__main__":
         try:
             project.update_src()
         except subprocess.CalledProcessError as e:
-            print "Error: {0} returned {1}".format(e.cmd, e.output)
+            print "Error: {0} returned {1}".format(e.cmd, e.returncode)
         except:
-            print "Something went wrong with %s!", project
+            print "Something went wrong with {0}!".format(project)
         project.create_mozconfig()
         sys.stdout.flush()
         os.execv('venv/bin/dxr',
