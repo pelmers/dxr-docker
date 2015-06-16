@@ -1,45 +1,46 @@
+# Used by docker/entrypoint.yml and <...>
 ---
-'mozilla-central':
+defaults:
+  schedule: '@weekly'
+  disable: false
+  build_command: ''   # DXR's default is 'make ...'
+  docker_img: 'klibby/dxr-es'
+  docker_vol: '/data/dxr_data:/builds/dxr-build-env/src'
+  jobs: 
+    - '{name}_index'
+
+# Additional options which may be defined:
+# mozconfig:
+#   - 'ac_add_options --enable-debug"
+# source_folder: 'path/to/src'          # Defaults to "src/<name>"
+# object_folder: 'path/to/obj'          # Defaults to "obj/<name>"
+
+trees:
+  - name: 'mozilla-central'
     url: "https://hg.mozilla.org/mozilla-central"
     schedule: "H H/4 * * *"
     build_command: "cd $source_folder && make -f client.mk build MOZ_OBJDIR=$build_folder MOZ_MAKE_FLAGS='-s -j{workers}'"
     mozconfig: 
-        - "ac_add_options --enable-debug"
-        - "ac_add_options --enable-stdcxx-compat"
-        - "ac_add_options --disable-elf-hack"
+      - "ac_add_options --enable-debug"
+      - "ac_add_options --enable-stdcxx-compat"
+      - "ac_add_options --disable-elf-hack"
 
-'comm-central':
+  - name: 'comm-central'
     url: 'https://hg.mozilla.org/comm-central'
     sched: 'H H/4 * * *'
     build_command: "cd $source_folder && python client.py checkout && make -f client.mk build MOZ_OBJDIR=$build_folder MOZ_MAKE_FLAGS='-s -j{workers}'"
     mozconfig: 
-        - "ac_add_options --enable-debug"
-        - "ac_add_options --enable-application=suite"
-        - "ac_add_options --disable-optimize"
-        - "ac_add_options --disable-stdcxx-compat"
-        - "ac_add_options --disable-elf-hack"
+      - "ac_add_options --enable-debug"
+      - "ac_add_options --enable-application=suite"
+      - "ac_add_options --disable-optimize"
+      - "ac_add_options --disable-stdcxx-compat"
+      - "ac_add_options --disable-elf-hack"
 
-'version-control-tools':
+  - name: 'hgcustom:version-control-tools'
     url: "https://hg.mozilla.org/hgcustom/verstion-control-tools"
 
-'build-central':
+  - name: 'build-central'
     url: "https://hg.mozilla.org/build/*"
     build_command: ""
     source_folder: "src/build"
         
-#
-# defaults:
-# schedule: "daily"
-# disable: false
-# build_command: ""
-# mozconfig: ""
-# source_folder: "src/{repo_dir}"
-# object_folder: "obj/{repo_dir}"
-# disabled_plugins: ""
-# endabled_plugins: "*"
-# ignore_patterns: ""
-# docker_img: "klibby/dxr-es"
-# docker_vol: "/data/dxr_data://builds/dxr-build-env/src"
-# jobs: 
-#   - '{name}_index'
-## quiet-period, concurrent, etc ?
