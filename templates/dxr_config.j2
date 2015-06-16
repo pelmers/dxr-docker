@@ -1,13 +1,27 @@
-{% for p in projects %}
-[{{ p.name }}]
-source_folder = {{ p.source_folder }}
-object_folder = {{ p.object_folder }}
-build_command = {{ p.build_command }}
-clean_command = {{ p.clean_command }}
-{{ 'disabled_plugins = %s\n' % p.disabled_plugins if p.disabled_plugins -}}
-{{ 'enabled_plugins = %s\n' % p.enabled_plugins if p.enabled_plugins -}}
-{{ 'ignore_patterns = %s\n' % p.ignore_patterns if p.ignore_patterns -}}
-{{ 'source_encoding = %s\n' % p.source_encoding if p.source_encoding -}}
+[DXR]
+www_root = /
+workers = 6
+default_tree = mozilla-central
+disabled_plugins = omniglot
+enabled_plugins = clang pygmentize urllink
+es_hosts = http://node46.bunker.scl3.mozilla.com:9200/ http://node47.bunker.scl3.mozilla.com:9200/ http://node48.bunker.scl3.mozilla.com:9200/ http://node49.bunker.scl3.mozilla.com:9200/
+es_catalog_replicas = 4
+es_catalog_index = dxr_catalog
+es_index = dxr_hot_{format}_{tree}_{unique}
+es_alias = dxr_{format}_{tree}
+es_indexing_timeout = 60
+es_refresh_interval = 30
+
+{% for tree, var in projects.iteritems() %}
+[{{ tree }}]
+source_folder = {{ var.source_folder }}
+object_folder = {{ var.object_folder }}
+build_command = {{ var.build_command }}
+clean_command = {{ var.clean_command }}
+{{ 'disabled_plugins = %s\n' % var.disabled_plugins if var.disabled_plugins -}}
+{{ 'enabled_plugins = %s\n' % var.enabled_plugins if var.enabled_plugins -}}
+{{ 'ignore_patterns = %s\n' % var.ignore_patterns if var.ignore_patterns -}}
+{{ 'source_encoding = %s\n' % var.source_encoding if var.source_encoding -}}
 [[buglink]]
 url=http://bugzilla.mozilla.org/show_bug.cgi?id=%s
 name=bugzilla.mozilla.org
